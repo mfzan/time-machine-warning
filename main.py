@@ -42,6 +42,14 @@ def main():
         handle.write(label)
     os.chmod(out_path, 0o644)
 
+    # Read the file back and confirm exactly what the gate will see.
+    with open(out_path, "r", encoding="utf-8", newline="") as handle:
+        written = handle.read()
+    if written != label:
+        sys.exit("error: entry.txt does not match the validated label")
+    if oct(os.stat(out_path).st_mode & 0o777) != "0o644":
+        sys.exit("error: entry.txt is not mode 0644")
+
     print("wrote %s (%d characters)" % (out_path, len(label)))
 
 
